@@ -96,8 +96,8 @@ const Index = () => {
       {/* Quick Stats */}
       <section className="py-16 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <Card className="bg-gradient-primary">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
+            <Card className="bg-gradient-primary cursor-pointer hover:shadow-lg transition-all duration-300" onClick={() => navigate('/events')}>
               <CardContent className="p-8">
                 <Calendar className="h-12 w-12 text-blue-400 mx-auto mb-4" />
                 <div className="text-3xl font-bold text-foreground mb-2">{events.length}</div>
@@ -105,19 +105,11 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-gradient-primary">
+            <Card className="bg-gradient-primary cursor-pointer hover:shadow-lg transition-all duration-300" onClick={() => navigate('/winners')}>
               <CardContent className="p-8">
                 <Trophy className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
                 <div className="text-3xl font-bold text-foreground mb-2">{winners.length}</div>
                 <p className="text-muted-foreground">Winners Declared</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-primary">
-              <CardContent className="p-8">
-                <Users className="h-12 w-12 text-green-400 mx-auto mb-4" />
-                <div className="text-3xl font-bold text-foreground mb-2">4</div>
-                <p className="text-muted-foreground">Competing Houses</p>
               </CardContent>
             </Card>
           </div>
