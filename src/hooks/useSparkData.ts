@@ -18,6 +18,17 @@ export interface Event {
   date: string;
 }
 
+export interface EventTemplate {
+  id: string;
+  name: string;
+  category: string;
+  type: 'Individual' | 'Group';
+  description?: string;
+  date?: string;
+  time?: string;
+  venue?: string;
+}
+
 export interface Winner {
   id: string;
   name: string;
@@ -68,27 +79,94 @@ const MOCK_EVENTS: Event[] = [
   }
 ];
 
+const MOCK_EVENT_TEMPLATES: EventTemplate[] = [
+  {
+    id: '1',
+    name: 'Poetry Recitation',
+    category: 'Junior',
+    type: 'Individual',
+    description: 'Express creativity through verse',
+    time: '10:00 AM',
+    venue: 'Main Auditorium'
+  },
+  {
+    id: '2',
+    name: 'Group Dance',
+    category: 'Senior',
+    type: 'Group',
+    description: 'Showcase traditional and modern dance forms',
+    time: '2:00 PM',
+    venue: 'School Ground'
+  },
+  {
+    id: '3',
+    name: 'Science Quiz',
+    category: 'Middle',
+    type: 'Individual',
+    description: 'Test your scientific knowledge',
+    time: '11:00 AM',
+    venue: 'Science Laboratory'
+  },
+  {
+    id: '4',
+    name: 'Drama Competition',
+    category: 'Senior',
+    type: 'Group',
+    description: 'Theatrical performances',
+    time: '3:00 PM',
+    venue: 'Main Auditorium'
+  },
+  {
+    id: '5',
+    name: 'Art Exhibition',
+    category: 'All',
+    type: 'Individual',
+    description: 'Display of creative artwork',
+    time: '9:00 AM',
+    venue: 'Art Gallery'
+  }
+];
+
 const MOCK_WINNERS: Winner[] = [
   {
     id: '1',
     name: 'Arjun Sharma',
     event: 'Poetry Recitation',
     house: 'Tagore',
-    position: 1
+    position: 1,
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
   },
   {
     id: '2',
     name: 'Priya Patel',
     event: 'Group Dance',
     house: 'Gandhi',
-    position: 1
+    position: 1,
+    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b1d4?w=150&h=150&fit=crop&crop=face'
   },
   {
     id: '3',
     name: 'Rahul Singh',
     event: 'Science Quiz',
     house: 'Nehru',
-    position: 2
+    position: 2,
+    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
+  },
+  {
+    id: '4',
+    name: 'Ananya Reddy',
+    event: 'Drama Competition',
+    house: 'Delany',
+    position: 1,
+    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face'
+  },
+  {
+    id: '5',
+    name: 'Vikram Kumar',
+    event: 'Art Exhibition',
+    house: 'Tagore',
+    position: 3,
+    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face'
   }
 ];
 
@@ -96,6 +174,7 @@ export const useSparkData = () => {
   const [houses, setHouses] = useState<House[]>(MOCK_HOUSES);
   const [events, setEvents] = useState<Event[]>(MOCK_EVENTS);
   const [winners, setWinners] = useState<Winner[]>(MOCK_WINNERS);
+  const [eventTemplates, setEventTemplates] = useState<EventTemplate[]>(MOCK_EVENT_TEMPLATES);
   const [loading, setLoading] = useState(false);
 
   // Calculate scoring based on position and type
@@ -155,12 +234,33 @@ export const useSparkData = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Add new event template
+  const addEventTemplate = (newEventTemplate: Omit<EventTemplate, 'id'>) => {
+    const eventTemplate: EventTemplate = {
+      ...newEventTemplate,
+      id: Date.now().toString()
+    };
+    setEventTemplates(prev => [...prev, eventTemplate]);
+  };
+
+  // Add winner photo
+  const addWinnerPhoto = (winnerId: string, imageUrl: string) => {
+    setWinners(prev => prev.map(winner => 
+      winner.id === winnerId 
+        ? { ...winner, image: imageUrl }
+        : winner
+    ));
+  };
+
   return {
     houses,
     events,
     winners,
+    eventTemplates,
     loading,
     addEvent,
+    addEventTemplate,
+    addWinnerPhoto,
     calculatePoints
   };
 };

@@ -5,14 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trophy, BarChart3, Users } from "lucide-react";
+import { Plus, Trophy, BarChart3, Users, Search, Camera } from "lucide-react";
 import { useSparkData } from "@/hooks/useSparkData";
 import { useToast } from "@/hooks/use-toast";
+import { useState as useReactState } from "react";
 import Header from "@/components/Header";
+import AddEventTemplateForm from "@/components/AddEventTemplateForm";
+import AddWinnerPhotoForm from "@/components/AddWinnerPhotoForm";
 
 const Admin: React.FC = () => {
-  const { events, addEvent, calculatePoints } = useSparkData();
+  const { events, eventTemplates, addEvent, calculatePoints } = useSparkData();
   const { toast } = useToast();
+  const [eventSearchQuery, setEventSearchQuery] = useReactState('');
   
   const [eventForm, setEventForm] = useState({
     name: '',
@@ -74,8 +78,11 @@ const Admin: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Add Event Form */}
-          <div className="lg:col-span-2">
+          {/* Add Event Templates Form */}
+          <div className="lg:col-span-2 space-y-6">
+            <AddEventTemplateForm />
+            
+            {/* Add Event Result */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -86,16 +93,36 @@ const Admin: React.FC = () => {
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="eventName">Event Name</Label>
-                      <Input
-                        id="eventName"
-                        value={eventForm.name}
-                        onChange={(e) => setEventForm({...eventForm, name: e.target.value})}
-                        placeholder="e.g., Poetry Recitation"
-                        required
-                      />
-                    </div>
+                     <div className="space-y-2">
+                       <Label htmlFor="eventName">Event Name</Label>
+                       <div className="relative">
+                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                         <Select value={eventForm.name} onValueChange={(value) => setEventForm({...eventForm, name: value})}>
+                           <SelectTrigger className="pl-10">
+                             <SelectValue placeholder="Search and select event" />
+                           </SelectTrigger>
+                           <SelectContent>
+                             <div className="p-2">
+                               <Input
+                                 placeholder="Search events..."
+                                 value={eventSearchQuery}
+                                 onChange={(e) => setEventSearchQuery(e.target.value)}
+                                 className="mb-2"
+                               />
+                             </div>
+                             {eventTemplates
+                               .filter(event => 
+                                 event.name.toLowerCase().includes(eventSearchQuery.toLowerCase())
+                               )
+                               .map((event) => (
+                                 <SelectItem key={event.id} value={event.name}>
+                                   {event.name} ({event.category})
+                                 </SelectItem>
+                               ))}
+                           </SelectContent>
+                         </Select>
+                       </div>
+                     </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="category">Grade Category</Label>
@@ -177,6 +204,9 @@ const Admin: React.FC = () => {
 
           {/* Stats & Recent Events */}
           <div className="space-y-6">
+            {/* Add Winner Photo */}
+            <AddWinnerPhotoForm />
+            
             {/* Quick Stats */}
             <Card>
               <CardHeader>
